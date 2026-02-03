@@ -45,12 +45,25 @@
     .pay-now-btn:hover { background:#145a88; }
 
     .payment-box {
-      margin-top:15px; padding:20px; background:#f7f9fc; border-radius:8px; display:none;
+      margin-top:15px; 
+      padding:20px; 
+      background:#f7f9fc; 
+      border-radius:8px; 
+      overflow:hidden;
+      max-height:0;
+      transition: max-height 0.4s ease, padding 0.4s ease;
     }
+    .payment-box.show {
+      max-height:500px; /* enough to show content */
+      padding:20px;
+    }
+
+    .payment-box p { margin-bottom:10px; font-weight:600; }
     .payment-box input { width:100%; padding:10px; border-radius:6px; border:1px solid #ccc; margin-bottom:10px; }
     .submit-btn { background:#1b6fa8; color:white; border:none; padding:12px 20px; border-radius:6px; cursor:pointer; }
     .submit-btn:hover { background:#145a88; }
     .success-msg { color:#1e7e34; margin-top:10px; font-size:14px; }
+    .note-msg { font-size:13px; color:#555; margin-top:8px; }
 
     /* Responsive */
     @media(max-width:768px){
@@ -63,7 +76,7 @@
 
 <div id="app">
   <div class="header">
-    <img src="./download-removebg-preview.png" alt="University Logo"> <!-- replace with your logo -->
+    <img src="./download-removebg-preview.png" alt="University Logo">
     <h1>Southeast University</h1>
   </div>
 
@@ -75,7 +88,7 @@
       <div class="student-details">
         <div class="student-left">
           <div><span>Student Name:</span> Sayed Zobayer Karim Rohan</div>
-          <div><span>Student ID:</span> 352855555</div>
+          <div><span>Student ID:</span> 35282</div>
           <div><span>Registration No:</span> 63826382</div>
           <div><span>Department:</span> CSE</div>
           <div><span>Semester:</span> Spring 2026</div>
@@ -85,7 +98,7 @@
           <div><span>Guardian Phone:</span> 01311457643</div>
         </div>
         <div class="student-right">
-          <img src="./WhatsApp Image 2026-02-03 at 7.31.43 AM.jpeg" alt="Student Photo"> <!-- replace with your photo -->
+          <img src="./WhatsApp Image 2026-02-03 at 7.31.43 AM.jpeg" alt="Student Photo">
         </div>
       </div>
     </div>
@@ -112,16 +125,18 @@
       </table>
 
       <!-- Pay Now Button -->
-      <button class="pay-now-btn" @click="showPayBox = !showPayBox">
+      <button class="pay-now-btn" @click="togglePayBox">
         Pay Now
       </button>
 
       <!-- Payment Box -->
-      <div class="payment-box" v-show="showPayBox">
-        <p>Bkash Agent Number: 0173628361</p>
+      <div class="payment-box" :class="{show: showPayBox}">
+        <p>Pay by Bkash</p>
+        <p>Bkash Agent Number: 0172462835</p>
         <input type="text" v-model="trxId" placeholder="Transaction ID">
-        <button class="submit-btn" @click="submitPayment">Submit</button>
+        <button class="submit-btn" @click="submitPayment">Pay Now</button>
         <div class="success-msg" v-if="successMsg">{{ successMsg }}</div>
+        <div class="note-msg">Transaction will be updated within 2-4 hours</div>
       </div>
     </div>
 
@@ -140,12 +155,16 @@ createApp({
     }
   },
   methods: {
+    togglePayBox() {
+      this.showPayBox = !this.showPayBox;
+      this.successMsg = '';
+    },
     submitPayment() {
       if(this.trxId.trim() === '') {
         alert("Please enter Transaction ID");
         return;
       }
-      this.successMsg = "Submitted successfully, wait 2-5 hours for transaction update.";
+      this.successMsg = "Payment request submitted successfully";
       this.trxId = '';
     }
   }
